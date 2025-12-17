@@ -19,6 +19,8 @@
 #include "perfetto/base/logging.h"
 #include "perfetto/protozero/proto_utils.h"
 
+#include <cstdint>
+
 namespace perfetto {
 
 TracePacket::TracePacket() = default;

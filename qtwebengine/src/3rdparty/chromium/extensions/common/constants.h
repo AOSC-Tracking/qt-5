@@ -13,6 +13,8 @@
 #include "components/version_info/channel.h"
 #include "ui/base/layout.h"
 
+#include <cstdint>
+
 namespace extensions {
 
 // Scheme we serve extension content from.

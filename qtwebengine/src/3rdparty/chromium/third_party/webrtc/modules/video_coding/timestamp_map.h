@@ -11,6 +11,7 @@
 #ifndef MODULES_VIDEO_CODING_TIMESTAMP_MAP_H_
 #define MODULES_VIDEO_CODING_TIMESTAMP_MAP_H_
 
+#include <cstdint>
 #include <memory>
 
 namespace webrtc {

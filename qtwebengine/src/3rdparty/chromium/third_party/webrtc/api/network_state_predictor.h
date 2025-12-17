@@ -11,6 +11,7 @@
 #ifndef API_NETWORK_STATE_PREDICTOR_H_
 #define API_NETWORK_STATE_PREDICTOR_H_
 
+#include <cstdint>
 #include <memory>
 #include <vector>
 
