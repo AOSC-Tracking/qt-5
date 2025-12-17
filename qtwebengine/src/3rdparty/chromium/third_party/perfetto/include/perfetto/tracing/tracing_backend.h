@@ -17,6 +17,7 @@
 #ifndef INCLUDE_PERFETTO_TRACING_TRACING_BACKEND_H_
 #define INCLUDE_PERFETTO_TRACING_TRACING_BACKEND_H_
 
+#include <cstdint>
 #include <memory>
 #include <string>
 

@@ -5,6 +5,7 @@
 #ifndef BASE_TASK_THREAD_POOL_H_
 #define BASE_TASK_THREAD_POOL_H_
 
+#include <cstdint>
 #include <memory>
 #include <utility>
 
