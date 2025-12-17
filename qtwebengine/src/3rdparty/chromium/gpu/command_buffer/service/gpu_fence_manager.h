@@ -5,6 +5,7 @@
 #ifndef GPU_COMMAND_BUFFER_SERVICE_GPU_FENCE_MANAGER_H_
 #define GPU_COMMAND_BUFFER_SERVICE_GPU_FENCE_MANAGER_H_
 
+#include <cstdint>
 #include <memory>
 #include <vector>
 

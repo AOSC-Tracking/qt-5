@@ -5,6 +5,7 @@
 #ifndef NET_TOOLS_HUFFMAN_TRIE_TRIE_ENTRY_H_
 #define NET_TOOLS_HUFFMAN_TRIE_TRIE_ENTRY_H_
 
+#include <cstdint>
 #include <memory>
 #include <string>
 #include <vector>

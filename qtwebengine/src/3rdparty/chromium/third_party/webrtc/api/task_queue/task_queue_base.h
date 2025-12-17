@@ -10,6 +10,7 @@
 #ifndef API_TASK_QUEUE_TASK_QUEUE_BASE_H_
 #define API_TASK_QUEUE_TASK_QUEUE_BASE_H_
 
+#include <cstdint>
 #include <memory>
 
 #include "api/task_queue/queued_task.h"
