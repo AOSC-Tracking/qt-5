@@ -89,6 +89,7 @@ void QWaylandXdgSurface::Toplevel::applyConfigure()
         && !m_xdgSurface->m_window->display()->isKeyboardAvailable())
         m_xdgSurface->m_window->display()->handleWindowDeactivated(m_xdgSurface->m_window);
 
+    m_xdgSurface->m_window->handleToplevelWindowTilingStatesChanged(m_toplevelStates);
     m_xdgSurface->m_window->handleWindowStatesChanged(m_pending.states);
 
     if (m_pending.size.isEmpty()) {
@@ -121,6 +122,7 @@ void QWaylandXdgSurface::Toplevel::xdg_toplevel_configure(int32_t width, int32_t
     size_t numStates = states->size / sizeof(uint32_t);
 
     m_pending.states = Qt::WindowNoState;
+    m_toplevelStates = QWaylandWindow::WindowNoState;
 
     for (size_t i = 0; i < numStates; i++) {
         switch (xdgStates[i]) {
@@ -132,6 +134,18 @@ void QWaylandXdgSurface::Toplevel::xdg_toplevel_configure(int32_t width, int32_t
             break;
         case XDG_TOPLEVEL_STATE_FULLSCREEN:
             m_pending.states |= Qt::WindowFullScreen;
+            break;
+        case XDG_TOPLEVEL_STATE_TILED_LEFT:
+            m_toplevelStates |= QWaylandWindow::WindowTiledLeft;
+            break;
+        case XDG_TOPLEVEL_STATE_TILED_RIGHT:
+            m_toplevelStates |= QWaylandWindow::WindowTiledRight;
+            break;
+        case XDG_TOPLEVEL_STATE_TILED_TOP:
+            m_toplevelStates |= QWaylandWindow::WindowTiledTop;
+            break;
+        case XDG_TOPLEVEL_STATE_TILED_BOTTOM:
+            m_toplevelStates |= QWaylandWindow::WindowTiledBottom;
             break;
         default:
             break;
@@ -491,7 +505,7 @@ void QWaylandXdgSurface::xdg_surface_configure(uint32_t serial)
 }
 
 QWaylandXdgShell::QWaylandXdgShell(QWaylandDisplay *display, uint32_t id, uint32_t availableVersion)
-    : QtWayland::xdg_wm_base(display->wl_registry(), id, qMin(availableVersion, 1u))
+    : QtWayland::xdg_wm_base(display->wl_registry(), id, qMin(availableVersion, 2u))
     , m_display(display)
 {
     display->addRegistryListener(&QWaylandXdgShell::handleRegistryGlobal, this);
