@@ -20,6 +20,8 @@
 #include "perfetto/base/build_config.h"
 #include "perfetto/base/compiler.h"
 
+#include <cstdint>
+
 #if PERFETTO_BUILDFLAG(PERFETTO_ZLIB)
 #include <zlib.h>
 #else
