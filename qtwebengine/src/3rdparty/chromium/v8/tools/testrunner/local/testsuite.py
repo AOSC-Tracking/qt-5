@@ -27,7 +27,7 @@
 
 
 import fnmatch
-import imp
+import importlib
 import itertools
 import os
 from contextlib import contextmanager
@@ -241,8 +241,8 @@ class TestGenerator(object):
 def _load_testsuite_module(name, root):
   f = None
   try:
-    (f, pathname, description) = imp.find_module("testcfg", [root])
-    yield imp.load_module(name + "_testcfg", f, pathname, description)
+    (f, pathname, description) = importlib.util.find_spec("testcfg", [root])
+    yield importlib.import_module(name + "_testcfg", f, pathname, description)
   finally:
     if f:
       f.close()

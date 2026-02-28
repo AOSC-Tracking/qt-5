@@ -3,7 +3,7 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import imp
+import importlib
 import os
 import tempfile
 import unittest
@@ -11,6 +11,18 @@ import unittest
 from compiler import Compiler
 from processor import FileCache, Processor
 
+import importlib.util
+import importlib.machinery
+
+def load_source(modname, filename):
+    loader = importlib.machinery.SourceFileLoader(modname, filename)
+    spec = importlib.util.spec_from_file_location(modname, filename, loader=loader)
+    module = importlib.util.module_from_spec(spec)
+    # The module is always executed and not cached in sys.modules.
+    # Uncomment the following line to cache the module.
+    # sys.modules[module.__name__] = module
+    loader.exec_module(module)
+    return module
 
 _SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 _SRC_DIR = os.path.join(_SCRIPT_DIR, os.pardir, os.pardir)
@@ -24,7 +36,7 @@ _CHROME_EXTERNS = os.path.join(_SRC_DIR, "third_party", "closure_compiler",
 _CHROME_SEND_EXTERNS = os.path.join(_SRC_DIR, "third_party", "closure_compiler",
                                     "externs", "chrome_send.js")
 _CLOSURE_ARGS_GNI = os.path.join(_SCRIPT_DIR, "closure_args.gni")
-_CLOSURE_ARGS = imp.load_source('closure_gni', _CLOSURE_ARGS_GNI)
+_CLOSURE_ARGS = load_source('closure_gni', _CLOSURE_ARGS_GNI)
 _COMMON_CLOSURE_ARGS = _CLOSURE_ARGS.default_closure_args + \
                        _CLOSURE_ARGS.default_disabled_closure_args
 

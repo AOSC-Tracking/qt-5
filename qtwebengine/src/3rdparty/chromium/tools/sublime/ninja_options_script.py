@@ -16,15 +16,28 @@
 
 from __future__ import print_function
 
-import imp
+import importlib
 import optparse
 import os
 import pipes
 
+import importlib.util
+import importlib.machinery
+
+def load_source(modname, filename):
+    loader = importlib.machinery.SourceFileLoader(modname, filename)
+    spec = importlib.util.spec_from_file_location(modname, filename, loader=loader)
+    module = importlib.util.module_from_spec(spec)
+    # The module is always executed and not cached in sys.modules.
+    # Uncomment the following line to cache the module.
+    # sys.modules[module.__name__] = module
+    loader.exec_module(module)
+    return module
+
 ycm_module_path = os.path.normpath(
     os.path.join(os.path.dirname(os.path.abspath(__file__)),
     '../vim/chromium.ycm_extra_conf.py'))
-ycm_extra_conf = imp.load_source('ycm_extra_conf', ycm_module_path)
+ycm_extra_conf = load_source('ycm_extra_conf', ycm_module_path)
 
 def main():
   usage = "usage: %prog [options] file"

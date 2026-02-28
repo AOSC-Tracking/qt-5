@@ -16,7 +16,7 @@ import subprocess
 import sys
 import tempfile
 import time
-import imp
+import importlib
 
 # from TestCasePackagerConfig import *
 
@@ -120,8 +120,8 @@ def loadMonkeyYaml():
     f = None
     try:
         p = os.path.dirname(os.path.realpath(__file__))
-        (f, pathname, description) = imp.find_module("monkeyYaml", [p])
-        module = imp.load_module("monkeyYaml", f, pathname, description)
+        (f, pathname, description) = importlib.import_module("monkeyYaml", [p])
+        module = importlib.import_module("monkeyYaml", f, pathname, description)
         return module
     except:
         raise ImportError("Cannot load monkeyYaml")
