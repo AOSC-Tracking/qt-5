@@ -7,7 +7,7 @@ import unittest
 
 import os
 import yaml
-import imp
+import importlib
 
 # add parent dir to search path
 import sys
@@ -15,8 +15,8 @@ import sys
 
 f = None
 try:
-    (f, pathname, description) = imp.find_module("monkeyYaml", [os.path.join(os.getcwd(), "../")])
-    module = imp.load_module("monkeyYaml", f, pathname, description)
+    (f, pathname, description) = importlib.util.find_spec("monkeyYaml", [os.path.join(os.getcwd(), "../")])
+    module = importlib.import_module("monkeyYaml", f, pathname, description)
     monkeyYaml = module
 except:
     raise ImportError("Cannot load monkeyYaml")

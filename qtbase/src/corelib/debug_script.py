@@ -28,17 +28,29 @@
 
 import os
 import sys
-import imp
 
 from distutils.version import LooseVersion
 
 MODULE_NAME = 'qt'
 
+import importlib.util
+import importlib.machinery
+
+def load_source(modname, filename):
+    loader = importlib.machinery.SourceFileLoader(modname, filename)
+    spec = importlib.util.spec_from_file_location(modname, filename, loader=loader)
+    module = importlib.util.module_from_spec(spec)
+    # The module is always executed and not cached in sys.modules.
+    # Uncomment the following line to cache the module.
+    # sys.modules[module.__name__] = module
+    loader.exec_module(module)
+    return module
+
 def import_bridge(path, debugger, session_dict, reload_module = False):
     if not reload_module and MODULE_NAME in sys.modules:
         del sys.modules[MODULE_NAME]
 
-    bridge = imp.load_source(MODULE_NAME, path)
+    bridge = load_source(MODULE_NAME, path)
 
     if not hasattr(bridge, '__lldb_init_module'):
         return None
