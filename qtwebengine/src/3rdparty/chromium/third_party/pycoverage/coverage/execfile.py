@@ -1,6 +1,6 @@
 """Execute files of Python code."""
 
-import imp, marshal, os, sys
+import importlib, types, marshal, os, sys
 
 from coverage.backward import exec_code_object, open_source
 from coverage.misc import ExceptionDuringRun, NoCode, NoSource
@@ -40,8 +40,8 @@ def run_python_module(modulename, args):
                 searchpath = package.__path__
             else:
                 packagename, name = None, modulename
-                searchpath = None  # "top-level search" in imp.find_module()
-            openfile, pathname, _ = imp.find_module(name, searchpath)
+                searchpath = None  # "top-level search" in importlib.util.find_spec()
+            openfile, pathname, _ = importlib.util.find_spec(name, searchpath)
 
             # Complain if this is a magic non-file module.
             if openfile is None and pathname is None:
@@ -56,7 +56,7 @@ def run_python_module(modulename, args):
                 name = '__main__'
                 package = __import__(packagename, glo, loc, ['__path__'])
                 searchpath = package.__path__
-                openfile, pathname, _ = imp.find_module(name, searchpath)
+                openfile, pathname, _ = importlib.util.find_spec(name, searchpath)
         except ImportError:
             _, err, _ = sys.exc_info()
             raise NoSource(str(err))
@@ -81,7 +81,7 @@ def run_python_file(filename, args, package=None):
     """
     # Create a module to serve as __main__
     old_main_mod = sys.modules['__main__']
-    main_mod = imp.new_module('__main__')
+    main_mod = types.ModuleType('__main__')
     sys.modules['__main__'] = main_mod
     main_mod.__file__ = filename
     if package:
@@ -154,7 +154,7 @@ def make_code_from_pyc(filename):
         # First four bytes are a version-specific magic number.  It has to
         # match or we won't run the file.
         magic = fpyc.read(4)
-        if magic != imp.get_magic():
+        if magic != importlib.util.MAGIC_NUMBER:
             raise NoCode("Bad magic number in .pyc file")
 
         # Skip the junk in the header that we don't need.

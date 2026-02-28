@@ -5,7 +5,6 @@
 
 import os
 import sys
-import imp
 import tempfile
 import unittest
 import PRESUBMIT

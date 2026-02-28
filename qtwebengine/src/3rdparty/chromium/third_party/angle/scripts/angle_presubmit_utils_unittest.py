@@ -6,11 +6,23 @@
 angle_presubmit_utils_unittest.py: Top-level unittest script for ANGLE presubmit checks.
 """
 
-import imp
+import importlib
 import os
 import unittest
 from angle_presubmit_utils import *
 
+import importlib.util
+import importlib.machinery
+
+def load_source(modname, filename):
+    loader = importlib.machinery.SourceFileLoader(modname, filename)
+    spec = importlib.util.spec_from_file_location(modname, filename, loader=loader)
+    module = importlib.util.module_from_spec(spec)
+    # The module is always executed and not cached in sys.modules.
+    # Uncomment the following line to cache the module.
+    # sys.modules[module.__name__] = module
+    loader.exec_module(module)
+    return module
 
 def SetCWDToAngleFolder():
     angle_folder = "angle"
@@ -21,7 +33,7 @@ def SetCWDToAngleFolder():
 
 SetCWDToAngleFolder()
 
-PRESUBMIT = imp.load_source('PRESUBMIT', 'PRESUBMIT.py')
+PRESUBMIT = load_source('PRESUBMIT', 'PRESUBMIT.py')
 
 
 class CommitMessageFormattingCheckTest(unittest.TestCase):

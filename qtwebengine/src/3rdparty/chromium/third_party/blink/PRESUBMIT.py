@@ -8,14 +8,27 @@ See https://dev.chromium.org/developers/how-tos/depottools/presubmit-scripts
 for more details about the presubmit API built into gcl.
 """
 
-import imp
+import importlib
 import inspect
 import os
 import re
 
+import importlib.util
+import importlib.machinery
+
+def load_source(modname, filename):
+    loader = importlib.machinery.SourceFileLoader(modname, filename)
+    spec = importlib.util.spec_from_file_location(modname, filename, loader=loader)
+    module = importlib.util.module_from_spec(spec)
+    # The module is always executed and not cached in sys.modules.
+    # Uncomment the following line to cache the module.
+    # sys.modules[module.__name__] = module
+    loader.exec_module(module)
+    return module
+
 try:
     # pylint: disable=C0103
-    audit_non_blink_usage = imp.load_source(
+    audit_non_blink_usage = load_source(
         'audit_non_blink_usage',
         os.path.join(os.path.dirname(inspect.stack()[0][1]),
                      'tools/blinkpy/presubmit/audit_non_blink_usage.py'))

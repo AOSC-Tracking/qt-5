@@ -32,7 +32,6 @@ import glob
 import os
 import subprocess
 import sys
-import imp
 import errno
 import shutil
 
