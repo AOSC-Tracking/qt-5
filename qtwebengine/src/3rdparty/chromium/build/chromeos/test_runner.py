@@ -9,7 +9,7 @@ import collections
 import json
 import logging
 import os
-import pipes
+import shlex
 import re
 import shutil
 import signal
@@ -292,7 +292,7 @@ class TastTest(RemoteTest):
         # aren't compatible.
         local_test_runner_cmd.append('-extrauseflags=tast_vm')
       if self._conditional:
-        local_test_runner_cmd.append(pipes.quote(self._conditional))
+        local_test_runner_cmd.append(shlex.quote(self._conditional))
       else:
         local_test_runner_cmd.extend(self._tests)
       device_test_script_contents.append(' '.join(local_test_runner_cmd))
