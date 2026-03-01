@@ -13,7 +13,7 @@ This script should be compatible with Python 2 and Python 3.
 
 import argparse
 import os
-import pipes
+import shlex
 import sys
 
 # Don't use any helper modules, or else they will end up in the results.
@@ -60,7 +60,7 @@ def _NormalizeCommandLine(options):
   for whitelist in sorted(options.whitelists):
     args.extend(('--whitelist', os.path.relpath(whitelist, _SRC_ROOT)))
   args.append(os.path.relpath(options.module, _SRC_ROOT))
-  return ' '.join(pipes.quote(x) for x in args)
+  return ' '.join(shlex.quote(x) for x in args)
 
 
 def _FindPythonInDirectory(directory):

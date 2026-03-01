@@ -7,7 +7,7 @@
 from __future__ import print_function
 
 import os
-import pipes
+import shlex
 import shutil
 import stat
 import subprocess
@@ -29,8 +29,8 @@ def EnsureDepotTools(v8_path, fetch_if_not_exist):
       print("Checking out depot_tools.")
       # shell=True needed on Windows to resolve git.bat.
       subprocess.check_call("git clone {} {}".format(
-          pipes.quote(DEPOT_TOOLS_URL),
-          pipes.quote(depot_tools)), shell=True)
+          shlex.quote(DEPOT_TOOLS_URL),
+          shlex.quote(depot_tools)), shell=True)
       # Using check_output to hide warning messages.
       subprocess.check_output(
           [sys.executable, gclient_path, "metrics", "--opt-out"],

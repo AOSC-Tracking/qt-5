@@ -4,7 +4,7 @@
 
 import json
 import os
-import pipes
+import shlex
 import shutil
 import subprocess
 import sys
@@ -55,7 +55,7 @@ def SetEnvironmentAndGetRuntimeDllDirs():
     # values there.
     gyp_defines_dict = gyp.NameValueListToDict(gyp.ShlexEnv('GYP_DEFINES'))
     gyp_defines_dict['windows_sdk_path'] = win_sdk
-    os.environ['GYP_DEFINES'] = ' '.join('%s=%s' % (k, pipes.quote(str(v)))
+    os.environ['GYP_DEFINES'] = ' '.join('%s=%s' % (k, shlex.quote(str(v)))
         for k, v in gyp_defines_dict.iteritems())
     os.environ['WINDOWSSDKDIR'] = win_sdk
     os.environ['WDK_DIR'] = wdk

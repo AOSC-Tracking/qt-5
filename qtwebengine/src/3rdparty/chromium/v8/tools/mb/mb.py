@@ -18,7 +18,7 @@ import ast
 import errno
 import json
 import os
-import pipes
+import shlex
 import platform
 import pprint
 import re
@@ -1131,8 +1131,8 @@ class MetaBuildWrapper(object):
       shell_quoter = QuoteForCmd
     else:
       env_prefix = ''
-      env_quoter = pipes.quote
-      shell_quoter = pipes.quote
+      env_quoter = shlex.quote
+      shell_quoter = shlex.quote
 
     def print_env(var):
       if env and var in env:
