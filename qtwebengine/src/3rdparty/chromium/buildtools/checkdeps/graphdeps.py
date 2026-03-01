@@ -17,7 +17,7 @@ See README.md for a detailed description of the DEPS format.
 
 import os
 import optparse
-import pipes
+import subprocess
 import re
 import sys
 
@@ -114,27 +114,45 @@ class DepsGrapher(DepsBuilder):
       self.deps.update(deps)
 
   def _DumpDependencies(self):
-    """Dumps the built dependency graph to the specified file with specified
-    format."""
-    if self.out_format == 'dot' and not self.layout_engine:
-      if self.unflatten_graph:
-        pipe = pipes.Template()
-        pipe.append('unflatten -l 2 -c 3', '--')
-        out = pipe.open(self.out_file, 'w')
-      else:
-        out = open(self.out_file, 'w')
-    else:
-      pipe = pipes.Template()
-      if self.unflatten_graph:
-        pipe.append('unflatten -l 2 -c 3', '--')
-      dot_cmd = 'dot -T' + self.out_format
-      if self.layout_engine:
-        dot_cmd += ' -K' + self.layout_engine
-      pipe.append(dot_cmd, '--')
-      out = pipe.open(self.out_file, 'w')
+      """Dumps the built dependency graph to the specified file with specified
+      format."""
+      pipeline_cmds = []
 
-    self._DumpDependenciesImpl(self.deps, out)
-    out.close()
+      # 1. Determine whether unflatten processing is needed
+      if self.unflatten_graph:
+        pipeline_cmds.append('unflatten -l 2 -c 3')
+
+      # 2. Check if format conversion is needed through the dot engine
+      if not (self.out_format == 'dot' and not self.layout_engine):
+        dot_cmd = 'dot -T' + self.out_format
+        if self.layout_engine:
+          dot_cmd += ' -K' + self.layout_engine
+        pipeline_cmds.append(dot_cmd)
+
+      # 3. Execute pipeline commands or write directly to file
+      if pipeline_cmds:
+        # Connect commands with pipe symbols and redirect the final result to the target file
+        cmd_string = ' | '.join(pipeline_cmds) + f' > "{self.out_file}"'
+
+        # Start a subprocess, open stdin so Python can write data
+        process = subprocess.Popen(
+            cmd_string,
+            shell=True,
+            stdin=subprocess.PIPE,
+            universal_newlines=True
+        )
+
+        # Stream dependency graph data to stdin of subprocess
+        self._DumpDependenciesImpl(self.deps, process.stdin)
+
+        # Must close stdin and wait for process to finish, otherwise data truncation or deadlock may occur
+        process.stdin.close()
+        process.wait()
+      else:
+        # If there are no commands (pure dot format without layout needed), write directly to file
+        out = open(self.out_file, 'w')
+        self._DumpDependenciesImpl(self.deps, out)
+        out.close()
 
   def _DumpDependenciesImpl(self, deps, out):
     """Computes nodes' and edges' properties for the dependency graph |deps| and
