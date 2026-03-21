@@ -47,11 +47,11 @@
 
 #include <QtNetwork/qabstractsocket.h>
 
+#include <QtCore/private/qnumeric_p.h>
 #include <QtCore/qloggingcategory.h>
 #include <QtCore/qendian.h>
 #include <QtCore/qdebug.h>
 #include <QtCore/qlist.h>
-#include <QtCore/private/qnumeric_p.h>
 #include <QtCore/qurl.h>
 
 #include <qhttp2configuration.h>

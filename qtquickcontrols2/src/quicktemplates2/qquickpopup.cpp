@@ -49,6 +49,7 @@
 #include <QtQuick/private/qquickaccessibleattached_p.h>
 #include <QtQuick/private/qquicktransition_p.h>
 #include <QtQuick/private/qquickitem_p.h>
+#include <QtQuick/private/qquickaccessibleattached_p.h>
 
 QT_BEGIN_NAMESPACE
 

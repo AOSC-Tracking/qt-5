@@ -70,9 +70,9 @@
 //! [macos]
 \table 80%
     \header \li Target Platform \li Architecture \li Build Environment
-    \row \li \macos 10.13, \macos 10.14, \macos 10.15, \macos 11, \macos 12
+    \row \li \macos 10.13, \macos 10.14, \macos 10.15, \macos 11, \macos 12, \macos 13, \macos 14
         \li \c x86_64 and \c x86_64h and \c arm64
-        \li Xcode 11, Xcode 12, Xcode 13 (12 SDK), or \b {Xcode 14} (13 SDK)
+        \li Xcode 14 (13 SDK), or \b {Xcode 15} (14 SDK)
 \endtable
 //! [macos]
 
@@ -82,7 +82,7 @@
     \header \li Operating System \li Architecture \li Compiler \li Notes
     \row \li Windows 11 22H2
         \li \c x86 and \c x86_64
-        \li {MSVC 2019}
+        \li MSVC 2022, \b {MSVC 2019}, MSVC 2017, MSVC 2015, MinGW 8.1
         \li
     \row \li Windows 10 21H2
         \li \c x86 and \c x86_64
@@ -120,10 +120,9 @@
 //! [ios]
 \table 80%
     \header \li Target Platform \li Architecture \li Build Environment \li Notes
-    \row \li iOS 12, iOS 13, iOS 14, iOS 15
+    \row \li iOS 14, 15, 16, 17
         \li \c armv8 (\c arm64)
-        \li  Xcode 11 (iOS 13.2 SDK), Xcode 12 (iOS 14 SDK), Xcode 13 (iOS 15 SDK),
-             \b {Xcode 14} (iOS 16 SDK)
+        \li Xcode 15 (iOS 17 SDK)
         \li
     \row \li tvOS 12, tvOS 13
         \li \c armv8 (\c arm64)

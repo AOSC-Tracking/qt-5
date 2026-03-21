@@ -83,6 +83,7 @@ FILES="
     LICENCE
 
     src/pcre2_auto_possess.c
+    src/pcre2_chkdint.c
     src/pcre2_compile.c
     src/pcre2_config.c
     src/pcre2_context.c
@@ -115,14 +116,15 @@ FILES="
     src/pcre2_ucptables.c
     src/pcre2_valid_utf.c
     src/pcre2_xclass.c
+    src/sljit/sljitConfigCPU.h
     src/sljit/sljitConfig.h
     src/sljit/sljitConfigInternal.h
-    src/sljit/sljitExecAllocator.c
     src/sljit/sljitLir.c
     src/sljit/sljitLir.h
     src/sljit/sljitNativeARM_32.c
     src/sljit/sljitNativeARM_64.c
     src/sljit/sljitNativeARM_T2_32.c
+    src/sljit/sljitNativeLOONGARCH_64.c
     src/sljit/sljitNativeMIPS_32.c
     src/sljit/sljitNativeMIPS_64.c
     src/sljit/sljitNativeMIPS_common.c
@@ -136,9 +138,17 @@ FILES="
     src/sljit/sljitNativeX86_32.c
     src/sljit/sljitNativeX86_64.c
     src/sljit/sljitNativeX86_common.c
-    src/sljit/sljitProtExecAllocator.c
+    src/sljit/sljitSerialize.c
     src/sljit/sljitUtils.c
-    src/sljit/sljitWXExecAllocator.c
+    src/sljit/allocator_src/sljitExecAllocatorPosix.c
+    src/sljit/allocator_src/sljitProtExecAllocatorPosix.c
+    src/sljit/allocator_src/sljitWXExecAllocatorPosix.c
+    src/sljit/allocator_src/sljitProtExecAllocatorNetBSD.c
+    src/sljit/allocator_src/sljitExecAllocatorWindows.c
+    src/sljit/allocator_src/sljitExecAllocatorFreeBSD.c
+    src/sljit/allocator_src/sljitExecAllocatorApple.c
+    src/sljit/allocator_src/sljitWXExecAllocatorWindows.c
+    src/sljit/allocator_src/sljitExecAllocatorCore.c
 "
 
 for i in $FILES; do
