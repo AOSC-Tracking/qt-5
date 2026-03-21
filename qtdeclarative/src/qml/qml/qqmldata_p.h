@@ -176,7 +176,7 @@ public:
     };
 
     struct NotifyList {
-        QAtomicInteger<quint64> connectionMask;
+        quint64 connectionMask = 0;
         QQmlNotifierEndpoint *todo = nullptr;
         QQmlNotifierEndpoint**notifies = nullptr;
         quint16 maximumTodoIndex = 0;
@@ -185,7 +185,7 @@ public:
     private:
         void layout(QQmlNotifierEndpoint*);
     };
-    QAtomicPointer<NotifyList> notifyList;
+    QAtomicPointer<NotifyList> notifyList = nullptr;
 
     inline QQmlNotifierEndpoint *notify(int index) const;
     void addNotify(int index, QQmlNotifierEndpoint *);
@@ -240,7 +240,7 @@ public:
 
     QQmlPropertyCache *propertyCache;
 
-    QQmlGuardImpl *guards = nullptr;
+    QQmlGuardImpl *guards = 0;
 
     static QQmlData *get(const QObject *object, bool create = false) {
         QObjectPrivate *priv = QObjectPrivate::get(const_cast<QObject *>(object));
@@ -354,7 +354,7 @@ QQmlNotifierEndpoint *QQmlData::notify(int index) const
     Q_ASSERT(index <= 0xFFFF);
 
     NotifyList *list = notifyList.loadRelaxed();
-    if (!list || !isIndexInConnectionMask(list->connectionMask.loadRelaxed(), index))
+    if (!list || !isIndexInConnectionMask(list->connectionMask, index))
         return nullptr;
 
     if (index < list->notifiesSize)
@@ -387,7 +387,7 @@ inline bool QQmlData::signalHasEndpoint(int index) const
     //    nondeterministic, either result is correct in that case. We can accept it.
 
     NotifyList *list = notifyList.loadRelaxed();
-    return list && isIndexInConnectionMask(list->connectionMask.loadRelaxed(), index);
+    return list && isIndexInConnectionMask(list->connectionMask, index);
 }
 
 bool QQmlData::hasBindingBit(int coreIndex) const

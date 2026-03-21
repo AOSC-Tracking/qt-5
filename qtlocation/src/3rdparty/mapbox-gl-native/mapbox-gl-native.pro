@@ -2,8 +2,7 @@ TARGET = qmapboxgl
 
 load(qt_helper_lib)
 
-CONFIG += qt c++14 exceptions warn_off staticlib object_parallel_to_source
-CONFIG -= c++1z
+CONFIG += qt c++17 exceptions warn_off staticlib object_parallel_to_source
 
 QT += network-private \
       gui-private \

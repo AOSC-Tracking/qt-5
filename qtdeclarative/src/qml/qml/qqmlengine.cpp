@@ -1861,8 +1861,7 @@ void QQmlData::addNotify(int index, QQmlNotifierEndpoint *endpoint)
     // Likewise, we don't really care _when_ the change in the connectionMask is propagated to other
     // threads. Cross-thread event ordering is inherently nondeterministic. Therefore, when querying
     // the conenctionMask in the presence of concurrent modification, any result is correct.
-    list->connectionMask.storeRelaxed(
-            list->connectionMask.loadRelaxed() | (1ULL << quint64(index % 64)));
+    list->connectionMask |= (1ULL << quint64(index % 64));
 
     if (index < list->notifiesSize) {
         endpoint->next = list->notifies[index];
@@ -1901,7 +1900,7 @@ void QQmlData::disconnectNotifiers(QQmlData::DeleteNotifyList doDelete)
             // We can use relaxed semantics here. The worst thing that can happen is that some
             // signal is falsely reported as connected. Signal connectedness across threads
             // is not quite deterministic anyway.
-            list->connectionMask.storeRelaxed(0);
+            list->connectionMask = 0;
             list->maximumTodoIndex = 0;
             list->notifiesSize = 0;
             list->notifies = nullptr;

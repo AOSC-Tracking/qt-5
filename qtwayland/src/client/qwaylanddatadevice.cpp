@@ -128,7 +128,7 @@ bool QWaylandDataDevice::startDrag(QMimeData *mimeData, Qt::DropActions supporte
     // but Wayland uses a mimetype to determine if a drag is accepted or not
     // In this rare case, insert a placeholder
     if (mimeData->formats().isEmpty())
-        mimeData->setData(QString::fromLatin1("application/x-qt-avoid-empty-placeholder"), QByteArray("1"));
+        mimeData->setData("application/x-qt-avoid-empty-placeholder", QByteArray("1"));
 
     m_dragSource.reset(new QWaylandDataSource(m_display->dndSelectionHandler(), mimeData));
 

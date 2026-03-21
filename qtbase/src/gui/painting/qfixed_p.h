@@ -51,11 +51,18 @@
 // We mean it.
 //
 
+// clang-format off
+
 #include <QtGui/private/qtguiglobal_p.h>
 #include "QtCore/qdebug.h"
 #include "QtCore/qpoint.h"
+#if defined(Q_OS_WIN)
+#include <qt_windows.h> // to suppress min, max macros.
+#endif
 #include <QtCore/private/qnumeric_p.h>
 #include "QtCore/qsize.h"
+
+// clang-format on
 
 QT_BEGIN_NAMESPACE
 

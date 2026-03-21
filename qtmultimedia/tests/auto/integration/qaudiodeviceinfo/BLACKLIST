@@ -2,3 +2,6 @@
 
 [deviceName]
 redhatenterpriselinuxworkstation-6.6
+[codecs]
+sles-15.4 # QTBUG-111296
+opensuse-leap-15.4 # QTBUG-111296

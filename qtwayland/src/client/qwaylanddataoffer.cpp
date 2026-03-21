@@ -56,6 +56,11 @@ static QString utf8Text()
     return QStringLiteral("text/plain;charset=utf-8");
 }
 
+static QString portalFileTransfer()
+{
+    return QStringLiteral("application/vnd.portal.filetransfer");
+}
+
 QWaylandDataOffer::QWaylandDataOffer(QWaylandDisplay *display, struct ::wl_data_offer *offer)
     : QtWayland::wl_data_offer(offer)
     , m_display(display)
@@ -182,7 +187,9 @@ QVariant QWaylandMimeData::retrieveData_sys(const QString &mimeType, QVariant::T
     }
 
     close(pipefd[0]);
-    m_data.insert(mimeType, content);
+    if (mimeType != portalFileTransfer())
+        m_data.insert(mimeType, content);
+
     return content;
 }
 

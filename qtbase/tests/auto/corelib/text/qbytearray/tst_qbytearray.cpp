@@ -869,7 +869,11 @@ void tst_QByteArray::qvsnprintf()
 
 #ifndef Q_OS_WIN
     memset(buf, 42, sizeof(buf));
+    QT_WARNING_PUSH
+    QT_WARNING_DISABLE_GCC("-Wformat-zero-length")
+    QT_WARNING_DISABLE_CLANG("-Wformat-zero-length")
     QCOMPARE(::qsnprintf(buf, 10, ""), 0);
+    QT_WARNING_POP
 #endif
 }
 
@@ -914,7 +918,10 @@ void tst_QByteArray::qstrncpy()
 
     // src == nullptr
     QCOMPARE(::qstrncpy(dst.data(), 0,  0), (char*)0);
+    QCOMPARE(*dst.data(), 'b'); // must not have written to dst
     QCOMPARE(::qstrncpy(dst.data(), 0, 10), (char*)0);
+    QCOMPARE(*dst.data(), '\0'); // must have written to dst
+    *dst.data() = 'b'; // restore
 
     // valid pointers, but len == 0
     QCOMPARE(::qstrncpy(dst.data(), src.data(), 0), dst.data());

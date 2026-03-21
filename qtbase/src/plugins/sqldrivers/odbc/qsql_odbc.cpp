@@ -2115,8 +2115,10 @@ void QODBCDriverPrivate::checkUnicode()
                                   hDbc,
                                   &hStmt);
 
-    auto encoded = toSQLTCHAR(QLatin1String("select 'test'"));
-    r = SQLExecDirect(hStmt, encoded.data(), SQLINTEGER(encoded.size()));
+    {
+        auto encoded = toSQLTCHAR(QLatin1String("select 'test'"));
+        r = SQLExecDirect(hStmt, encoded.data(), SQLINTEGER(encoded.size()));
+    }
     if(r == SQL_SUCCESS) {
         r = SQLFetch(hStmt);
         if(r == SQL_SUCCESS) {

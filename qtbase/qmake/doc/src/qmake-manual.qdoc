@@ -1118,7 +1118,7 @@
     \note This variable applies only to Android targets.
 
     Specifies the target Android API level for the project. By default, this
-    variable is set to API level 30.
+    variable is set to API level 31.
 
     \target ANDROID_VERSION_CODE
     \section1 ANDROID_VERSION_CODE
@@ -1886,6 +1886,21 @@
     when generating Makefiles. The value of this variable is automatically computed.
 
     \note Do not attempt to overwrite the value of this variable.
+
+    \target QMAKE_APPLE_DEVICE_ARCHS
+    \section1 QMAKE_APPLE_DEVICE_ARCHS
+
+    \note This variable is used on \macos only.
+
+    Specifies a list of architectures to build for. By default, a project is
+    built for the development machine's architecture. This variable allows to
+    override the default and build for a different architecture or to create
+    multi-architecture binaries.
+
+    This variable is usually specified on the command line or in the project
+    file.
+
+    See \l{Qt for macOS} for more information.
 
     \target QMAKE_AR_CMD
     \section1 QMAKE_AR_CMD

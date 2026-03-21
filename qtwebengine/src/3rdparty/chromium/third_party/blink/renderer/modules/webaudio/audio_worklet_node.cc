@@ -102,11 +102,16 @@ void AudioWorkletHandler::Process(uint32_t frames_to_process) {
   // We also need to check if the global scope is valid before we request
   // the rendering in the AudioWorkletGlobalScope.
   if (processor_ && !processor_->hasErrorOccurred()) {
-    // If the input is not connected, inform the processor with nullptr.
-    for (unsigned i = 0; i < NumberOfInputs(); ++i)
+    // If the input or the output is not connected, inform the processor with
+    // nullptr.
+    for (unsigned i = 0; i < NumberOfInputs(); ++i) {
       inputs_[i] = Input(i).IsConnected() ? Input(i).Bus() : nullptr;
-    for (unsigned i = 0; i < NumberOfOutputs(); ++i)
-      outputs_[i] = WrapRefCounted(Output(i).Bus());
+    }
+    for (unsigned i = 0; i < NumberOfOutputs(); ++i) {
+      outputs_[i] = Output(i).IsConnectedDuringRendering()
+                        ? WrapRefCounted(Output(i).Bus())
+                        : nullptr;
+    }
 
     for (const auto& param_name : param_value_map_.Keys()) {
       auto* const param_handler = param_handler_map_.at(param_name);
@@ -132,8 +137,11 @@ void AudioWorkletHandler::Process(uint32_t frames_to_process) {
     // The initialization of handler or the associated processor might not be
     // ready yet or it is in the error state. If so, zero out the connected
     // output.
-    for (unsigned i = 0; i < NumberOfOutputs(); ++i)
-      Output(i).Bus()->Zero();
+    for (unsigned i = 0; i < NumberOfOutputs(); ++i) {
+      if (Output(i).IsConnectedDuringRendering()) {
+        Output(i).Bus()->Zero();
+      }
+    }
   }
 }
 

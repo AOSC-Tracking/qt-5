@@ -137,10 +137,10 @@ public:
     virtual void serialize(QDataStream &ds) const;
 
     // Static Utility Methods
-    static inline qint64 maxMSecs() { return std::numeric_limits<qint64>::max(); }
-    static inline qint64 minMSecs() { return std::numeric_limits<qint64>::min() + 1; }
-    static inline qint64 invalidMSecs() { return std::numeric_limits<qint64>::min(); }
-    static inline qint64 invalidSeconds() { return std::numeric_limits<int>::min(); }
+    static inline qint64 maxMSecs() { return (std::numeric_limits<qint64>::max)(); }
+    static inline qint64 minMSecs() { return (std::numeric_limits<qint64>::min)() + 1; }
+    static inline qint64 invalidMSecs() { return (std::numeric_limits<qint64>::min)(); }
+    static inline qint64 invalidSeconds() { return (std::numeric_limits<int>::min)(); }
     static Data invalidData();
     static QTimeZone::OffsetData invalidOffsetData();
     static QTimeZone::OffsetData toOffsetData(const Data &data);
@@ -359,7 +359,7 @@ private:
     mutable QExplicitlySharedDataPointer<const QIcuTimeZonePrivate> m_icu;
 #endif
     QTzTimeZoneCacheEntry cached_data;
-    QVector<QTzTransitionTime> tranCache() const { return cached_data.m_tranTimes; }
+    const QVector<QTzTransitionTime> &tranCache() const { return cached_data.m_tranTimes; }
 };
 #endif // Q_OS_UNIX
 

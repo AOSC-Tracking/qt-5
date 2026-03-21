@@ -1064,7 +1064,7 @@ void QXcbWindow::setNetWmState(Qt::WindowFlags flags)
 void QXcbWindow::setNetWmStateOnUnmappedWindow()
 {
     if (Q_UNLIKELY(m_mapped))
-        qCWarning(lcQpaXcb()) << "internal error: " << Q_FUNC_INFO << "called on mapped window";
+        qCDebug(lcQpaXcb()) << "internal info: " << Q_FUNC_INFO << "called on mapped window";
 
     NetWmStates states;
     const Qt::WindowFlags flags = window()->flags();
@@ -1299,6 +1299,7 @@ void QXcbWindow::setParent(const QPlatformWindow *parent)
         m_embedded = false;
     }
     xcb_reparent_window(xcb_connection(), xcb_window(), xcb_parent_id, topLeft.x(), topLeft.y());
+    connection()->sync();
 }
 
 void QXcbWindow::setWindowTitle(const QString &title)

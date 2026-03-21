@@ -52,7 +52,7 @@
 
 #include <qglobal.h>
 
-#if QT_HAS_INCLUDE(<memory_resource>) && __cplusplus > 201402L
+#if defined(__cpp_lib_memory_resource) && __cplusplus > 201402L
 #  include <unordered_set>
 #  include <memory_resource>
 #else
@@ -78,7 +78,7 @@ class QDuplicateTracker {
     QSet<T> set = makeQSet();
     int setSize = 0;
 #endif
-    Q_DISABLE_COPY_MOVE(QDuplicateTracker);
+    Q_DISABLE_COPY_MOVE(QDuplicateTracker)
 public:
     QDuplicateTracker() = default;
     void reserve(int n) { set.reserve(n); }

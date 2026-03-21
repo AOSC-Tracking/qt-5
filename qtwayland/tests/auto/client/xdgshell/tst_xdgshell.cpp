@@ -79,13 +79,13 @@ void tst_xdgshell::basicConfigure()
     window.show();
     QCOMPOSITOR_TRY_VERIFY(xdgToplevel());
 
-    QSignalSpy configureSpy(exec([=] { return xdgSurface(); }), &XdgSurface::configureCommitted);
+    QSignalSpy configureSpy(exec([&] { return xdgSurface(); }), &XdgSurface::configureCommitted);
 
     QTRY_VERIFY(window.isVisible());
     // The window should not be exposed before the first xdg_surface configure event
     QTRY_VERIFY(!window.isExposed());
 
-    exec([=] {
+    exec([&] {
         xdgToplevel()->sendConfigure({0, 0}, {}); // Let the window decide the size
     });
 
@@ -93,9 +93,9 @@ void tst_xdgshell::basicConfigure()
     QTRY_VERIFY(!window.isExposed()); //Window should not be exposed before the first configure event
     QVERIFY(configureSpy.isEmpty());
 
-    const uint serial = exec([=] { return nextSerial(); });
+    const uint serial = exec([&] { return nextSerial(); });
 
-    exec([=] {
+    exec([&] {
         xdgSurface()->sendConfigure(serial);
     });
 
@@ -121,17 +121,17 @@ void tst_xdgshell::configureSize()
     window.show();
     QCOMPOSITOR_TRY_VERIFY(xdgToplevel());
 
-    QSignalSpy configureSpy(exec([=] { return xdgSurface(); }), &XdgSurface::configureCommitted);
+    QSignalSpy configureSpy(exec([&] { return xdgSurface(); }), &XdgSurface::configureCommitted);
 
     const QSize configureSize(60, 40);
 
-    exec([=] {
+    exec([&] {
         xdgToplevel()->sendCompleteConfigure(configureSize);
     });
 
     QTRY_COMPARE(configureSpy.count(), 1);
 
-    exec([=] {
+    exec([&] {
         Buffer *buffer = xdgToplevel()->surface()->m_committed.buffer;
         QVERIFY(buffer);
         QCOMPARE(buffer->size(), configureSize);
@@ -147,7 +147,7 @@ void tst_xdgshell::configureStates()
     QCOMPOSITOR_TRY_VERIFY(xdgToplevel());
 
     const QSize windowedSize(320, 240);
-    const uint windowedSerial = exec([=] {
+    const uint windowedSerial = exec([&] {
         return xdgToplevel()->sendCompleteConfigure(windowedSize, { XdgToplevel::state_activated });
     });
     QCOMPOSITOR_TRY_COMPARE(xdgSurface()->m_committedConfigureSerial, windowedSerial);
@@ -165,7 +165,7 @@ void tst_xdgshell::configureStates()
             Qt::WindowActive)); // Just make sure it eventually get's set correctly
 
     const QSize screenSize(640, 480);
-    const uint maximizedSerial = exec([=] {
+    const uint maximizedSerial = exec([&] {
         return xdgToplevel()->sendCompleteConfigure(screenSize, { XdgToplevel::state_activated, XdgToplevel::state_maximized });
     });
     QCOMPOSITOR_TRY_COMPARE(xdgSurface()->m_committedConfigureSerial, maximizedSerial);
@@ -174,7 +174,7 @@ void tst_xdgshell::configureStates()
     QCOMPARE(window.frameGeometry().size(), screenSize);
 //    QCOMPARE(window.frameGeometry().topLeft(), QPoint()); // TODO: this doesn't currently work when window decorations are enabled
 
-    const uint fullscreenSerial = exec([=] {
+    const uint fullscreenSerial = exec([&] {
         return xdgToplevel()->sendCompleteConfigure(screenSize, { XdgToplevel::state_activated, XdgToplevel::state_fullscreen });
     });
     QCOMPOSITOR_TRY_COMPARE(xdgSurface()->m_committedConfigureSerial, fullscreenSerial);
@@ -184,7 +184,7 @@ void tst_xdgshell::configureStates()
 //    QCOMPARE(window.frameGeometry().topLeft(), QPoint()); // TODO: this doesn't currently work when window decorations are enabled
 
     // The window should remember its original size
-    const uint restoreSerial = exec([=] {
+    const uint restoreSerial = exec([&] {
         return xdgToplevel()->sendCompleteConfigure({0, 0}, { XdgToplevel::state_activated });
     });
     QCOMPOSITOR_TRY_COMPARE(xdgSurface()->m_committedConfigureSerial, restoreSerial);
@@ -215,11 +215,11 @@ void tst_xdgshell::popup()
     window.show();
 
     QCOMPOSITOR_TRY_VERIFY(xdgToplevel());
-    QSignalSpy toplevelConfigureSpy(exec([=] { return xdgSurface(); }), &XdgSurface::configureCommitted);
-    exec([=] { xdgToplevel()->sendCompleteConfigure(); });
+    QSignalSpy toplevelConfigureSpy(exec([&] { return xdgSurface(); }), &XdgSurface::configureCommitted);
+    exec([&] { xdgToplevel()->sendCompleteConfigure(); });
     QTRY_COMPARE(toplevelConfigureSpy.count(), 1);
 
-    uint clickSerial = exec([=] {
+    uint clickSerial = exec([&] {
         auto *surface = xdgToplevel()->surface();
         auto *p = pointer();
         auto *c = client();
@@ -233,7 +233,7 @@ void tst_xdgshell::popup()
 
     QTRY_VERIFY(window.m_popup);
     QCOMPOSITOR_TRY_VERIFY(xdgPopup());
-    QSignalSpy popupConfigureSpy(exec([=] { return xdgPopup()->m_xdgSurface; }), &XdgSurface::configureCommitted);
+    QSignalSpy popupConfigureSpy(exec([&] { return xdgPopup()->m_xdgSurface; }), &XdgSurface::configureCommitted);
     QCOMPOSITOR_TRY_VERIFY(xdgPopup()->m_grabbed);
     QCOMPOSITOR_TRY_COMPARE(xdgPopup()->m_grabSerial, clickSerial);
 
@@ -241,13 +241,13 @@ void tst_xdgshell::popup()
     QVERIFY(!popup->isExposed()); // wait for configure
 
     //TODO: Verify it works with a different configure window geometry
-    exec([=] { xdgPopup()->sendConfigure(QRect(100, 100, 100, 100)); });
+    exec([&] { xdgPopup()->sendConfigure(QRect(100, 100, 100, 100)); });
 
     // Nothing should happen before the *xdg_surface* configure
     QTRY_VERIFY(!popup->isExposed()); // Popup shouldn't be exposed before the first configure event
     QVERIFY(popupConfigureSpy.isEmpty());
 
-    const uint configureSerial = exec([=] {
+    const uint configureSerial = exec([&] {
         return xdgPopup()->m_xdgSurface->sendConfigure();
     });
 
@@ -301,10 +301,10 @@ void tst_xdgshell::tooltipOnPopup()
     window.show();
 
     QCOMPOSITOR_TRY_VERIFY(xdgToplevel());
-    exec([=] { xdgToplevel()->sendCompleteConfigure(); });
+    exec([&] { xdgToplevel()->sendCompleteConfigure(); });
     QCOMPOSITOR_TRY_VERIFY(xdgToplevel()->m_xdgSurface->m_committedConfigureSerial);
 
-    exec([=] {
+    exec([&] {
         auto *surface = xdgToplevel()->surface();
         auto *p = pointer();
         auto *c = client();
@@ -318,11 +318,11 @@ void tst_xdgshell::tooltipOnPopup()
     });
 
     QCOMPOSITOR_TRY_VERIFY(xdgPopup());
-    exec([=] { xdgPopup()->sendCompleteConfigure(QRect(100, 100, 100, 100)); });
+    exec([&] { xdgPopup()->sendCompleteConfigure(QRect(100, 100, 100, 100)); });
     QCOMPOSITOR_TRY_VERIFY(xdgPopup()->m_xdgSurface->m_committedConfigureSerial);
     QCOMPOSITOR_TRY_VERIFY(xdgPopup()->m_grabbed);
 
-    exec([=] {
+    exec([&] {
         auto *surface = xdgPopup()->surface();
         auto *p = pointer();
         auto *c = client();
@@ -334,7 +334,7 @@ void tst_xdgshell::tooltipOnPopup()
     });
 
     QCOMPOSITOR_TRY_VERIFY(xdgPopup(1));
-    exec([=] { xdgPopup(1)->sendCompleteConfigure(QRect(100, 100, 100, 100)); });
+    exec([&] { xdgPopup(1)->sendCompleteConfigure(QRect(100, 100, 100, 100)); });
     QCOMPOSITOR_TRY_VERIFY(xdgPopup(1)->m_xdgSurface->m_committedConfigureSerial);
     QCOMPOSITOR_TRY_VERIFY(!xdgPopup(1)->m_grabbed);
 
@@ -471,10 +471,10 @@ void tst_xdgshell::switchPopups()
     window.show();
 
     QCOMPOSITOR_TRY_VERIFY(xdgToplevel());
-    exec([=] { xdgToplevel()->sendCompleteConfigure(); });
+    exec([&] { xdgToplevel()->sendCompleteConfigure(); });
     QCOMPOSITOR_TRY_VERIFY(xdgToplevel()->m_xdgSurface->m_committedConfigureSerial);
 
-    exec([=] {
+    exec([&] {
         auto *surface = xdgToplevel()->surface();
         auto *p = pointer();
         auto *c = client();
@@ -488,13 +488,13 @@ void tst_xdgshell::switchPopups()
     });
 
     QCOMPOSITOR_TRY_VERIFY(xdgPopup());
-    exec([=] { xdgPopup()->sendCompleteConfigure(QRect(100, 100, 100, 100)); });
+    exec([&] { xdgPopup()->sendCompleteConfigure(QRect(100, 100, 100, 100)); });
     QCOMPOSITOR_TRY_VERIFY(xdgPopup()->m_xdgSurface->m_committedConfigureSerial);
     QCOMPOSITOR_TRY_VERIFY(xdgPopup()->m_grabbed);
 
-    QSignalSpy firstDestroyed(exec([=] { return xdgPopup(); }), &XdgPopup::destroyRequested);
+    QSignalSpy firstDestroyed(exec([&] { return xdgPopup(); }), &XdgPopup::destroyRequested);
 
-    exec([=] {
+    exec([&] {
         auto *surface = xdgToplevel()->surface();
         auto *p = pointer();
         auto *c = client();
@@ -519,7 +519,7 @@ void tst_xdgshell::switchPopups()
     QCOMPOSITOR_TRY_VERIFY(xdgPopup()->m_parentXdgSurface == xdgToplevel()->m_xdgSurface);
 
     // For good measure just check that configuring works as usual
-    exec([=] { xdgPopup()->sendCompleteConfigure(QRect(100, 100, 100, 100)); });
+    exec([&] { xdgPopup()->sendCompleteConfigure(QRect(100, 100, 100, 100)); });
     QCOMPOSITOR_TRY_VERIFY(xdgPopup()->m_xdgSurface->m_committedConfigureSerial);
 }
 
@@ -543,10 +543,10 @@ void tst_xdgshell::hidePopupParent()
     window.show();
 
     QCOMPOSITOR_TRY_VERIFY(xdgToplevel());
-    exec([=] { xdgToplevel()->sendCompleteConfigure(); });
+    exec([&] { xdgToplevel()->sendCompleteConfigure(); });
     QCOMPOSITOR_TRY_VERIFY(xdgToplevel()->m_xdgSurface->m_committedConfigureSerial);
 
-    exec([=] {
+    exec([&] {
         auto *surface = xdgToplevel()->surface();
         auto *p = pointer();
         auto *c = client();
@@ -557,7 +557,7 @@ void tst_xdgshell::hidePopupParent()
         p->sendFrame(c);
     });
     QCOMPOSITOR_TRY_VERIFY(xdgPopup());
-    exec([=] {
+    exec([&] {
         xdgPopup()->sendConfigure(QRect(100, 100, 100, 100));
         xdgPopup()->m_xdgSurface->sendConfigure();
     });
@@ -578,9 +578,9 @@ void tst_xdgshell::pongs()
     // Verify that the client has bound to the global
     QCOMPOSITOR_TRY_COMPARE(get<XdgWmBase>()->resourceMap().size(), 1);
 
-    QSignalSpy pongSpy(exec([=] { return get<XdgWmBase>(); }), &XdgWmBase::pong);
-    const uint serial = exec([=] { return nextSerial(); });
-    exec([=] {
+    QSignalSpy pongSpy(exec([&] { return get<XdgWmBase>(); }), &XdgWmBase::pong);
+    const uint serial = exec([&] { return nextSerial(); });
+    exec([&] {
         auto *base = get<XdgWmBase>();
         wl_resource *resource = base->resourceMap().first()->handle;
         base->send_ping(resource, serial);
@@ -619,7 +619,7 @@ void tst_xdgshell::windowGeometry()
     window.show();
     QCOMPOSITOR_TRY_VERIFY(xdgToplevel());
 
-    exec([=] { xdgToplevel()->sendCompleteConfigure(); });
+    exec([&] { xdgToplevel()->sendCompleteConfigure(); });
 
     QSize marginsSize;
     marginsSize.setWidth(window.frameMargins().left() + window.frameMargins().right());
@@ -651,7 +651,7 @@ void tst_xdgshell::foreignSurface()
 
     // Just do something to make sure we don't destroy the surface before
     // the pointer events above are handled.
-    QSignalSpy spy(exec([=] { return surface(newSurfaceIndex); }), &Surface::commit);
+    QSignalSpy spy(exec([&] { return surface(newSurfaceIndex); }), &Surface::commit);
     wl_surface_commit(foreignSurface);
     QTRY_COMPARE(spy.count(), 1);
 
