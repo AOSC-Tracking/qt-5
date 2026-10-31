@@ -220,8 +220,11 @@ struct seccomp_notif_addfd {
 #define SECCOMP_RET_INVALID 0x00010000U  // Illegal return value
 #endif
 
+// check glibc version < 2.42
+#if (__GLIBC__ < 2) || (__GLIBC__ == 2 && __GLIBC_MINOR__ < 42)
 #ifndef SYS_SECCOMP
 #define SYS_SECCOMP                   1
+#endif
 #endif
 
 #endif  // SANDBOX_LINUX_SYSTEM_HEADERS_LINUX_SECCOMP_H_
