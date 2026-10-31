@@ -1,5 +1,0 @@
-if (QT_STATIC_BUILD)
-    list(APPEND JSC_LIBRARIES
-        ${STATIC_LIB_DEPENDENCIES}
-    )
-endif ()

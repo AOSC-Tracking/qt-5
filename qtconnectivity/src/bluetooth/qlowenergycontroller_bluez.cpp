@@ -1105,6 +1105,7 @@ void QLowEnergyControllerPrivateBluez::processReply(
             mtuSize = ATT_DEFAULT_LE_MTU;
             break;
         }
+
         if (response.size() < 3) {
             reportMalformedData(command, response);
             break;

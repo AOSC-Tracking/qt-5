@@ -221,6 +221,7 @@
 #if QT_CONFIG(statemachine)
 #include "qstatemachine.h"
 #endif
+#include "qstdlibdetection.h"
 #include "qstorageinfo.h"
 #include "qstring.h"
 #include "qstringalgorithms.h"
